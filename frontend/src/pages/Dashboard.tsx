@@ -1,8 +1,25 @@
 import { motion } from "framer-motion";
-import { MetricsCard, PerformanceChart, SectionTitle } from "@/components";
+import { PerformanceChart, SectionTitle } from "@/components";
 import Transition from "@/components/commons/Transition";
+import { useGetGlobalMetrics } from "@/hooks/useGetGlobalMetrics";
+import { useGetAnnualizedReturns } from "@/hooks/useGetAnnualizedReturns";
+import {
+  GlobalMetricsSection,
+  AnnualizedReturnsSection,
+} from "@/components/Dashboard/MetricsCard/components";
 
 const DashboardPage = () => {
+  const {
+    data: globalMetricsData,
+    isLoading: globalMetricsLoading,
+    error: globalMetricsError,
+  } = useGetGlobalMetrics();
+  const {
+    data: annualizedReturnsData,
+    isLoading: annualizedReturnsLoading,
+    error: annualizedReturnsError,
+  } = useGetAnnualizedReturns();
+
   return (
     <motion.div
       initial={{
@@ -21,60 +38,19 @@ const DashboardPage = () => {
       <div className="px-[41px] pt-[23px] pb-[45px] flex-grow">
         <section>
           <SectionTitle>Global Metrics</SectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10 h-auto">
-            <MetricsCard
-              title="Total Allocation"
-              value="$2,533,557.32"
-              type="globalMetrics"
-            />
-            <MetricsCard
-              title="Day Change"
-              value="+$4,482.29"
-              secondaryValue="(0.18%)"
-              type="globalMetrics"
-            />
-            <MetricsCard
-              title="YDT Change"
-              value="+$1,360,225"
-              secondaryValue="(115.93%)"
-              type="globalMetrics"
-            />
-            <MetricsCard
-              title="Average Annualized Yield"
-              value="23%"
-              type="globalMetrics"
-            />
-            <MetricsCard
-              title="Total Depolyed"
-              value="$21,000,000"
-              type="globalMetrics"
-            />
-          </div>
+          <GlobalMetricsSection
+            data={globalMetricsData?.data}
+            isLoading={globalMetricsLoading}
+            isError={!!globalMetricsError}
+          />
         </section>
         <section className="my-[20px]">
           <SectionTitle>Annualized Returns</SectionTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10 h-auto">
-            <MetricsCard
-              title="All time"
-              value="8.838%"
-              type="annualizedReturns"
-            />
-            <MetricsCard
-              title="30-Day"
-              value="8.838%"
-              type="annualizedReturns"
-            />
-            <MetricsCard
-              title="7-Day"
-              value="7.765%"
-              type="annualizedReturns"
-            />
-            <MetricsCard
-              title="24-Hour"
-              value="7.765%"
-              type="annualizedReturns"
-            />
-          </div>
+          <AnnualizedReturnsSection
+            data={annualizedReturnsData?.data}
+            isLoading={annualizedReturnsLoading}
+            isError={!!annualizedReturnsError}
+          />
         </section>
         <section className="mt-[20px]">
           <SectionTitle>Performance</SectionTitle>

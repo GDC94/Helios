@@ -8,9 +8,7 @@ afterEach(() => {
   cleanup();
 });
 
-// Setup mocks para testing
 beforeAll(() => {
-  // Mock IntersectionObserver
   const mockIntersectionObserver = vi.fn();
   mockIntersectionObserver.mockReturnValue({
     observe: () => null,
@@ -19,7 +17,6 @@ beforeAll(() => {
   });
   window.IntersectionObserver = mockIntersectionObserver;
 
-  // Mock ResizeObserver
   const mockResizeObserver = vi.fn();
   mockResizeObserver.mockReturnValue({
     observe: () => null,
@@ -28,7 +25,6 @@ beforeAll(() => {
   });
   window.ResizeObserver = mockResizeObserver;
 
-  // Mock matchMedia
   Object.defineProperty(window, "matchMedia", {
     writable: true,
     value: vi.fn().mockImplementation(query => ({
@@ -42,8 +38,6 @@ beforeAll(() => {
       dispatchEvent: vi.fn(),
     })),
   });
-
-  // Mock animation frames
   window.requestAnimationFrame = vi.fn(cb => setTimeout(cb, 0));
   window.cancelAnimationFrame = vi.fn(id => clearTimeout(id));
 });

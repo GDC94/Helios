@@ -3,7 +3,11 @@ import { MdOutlineFolder } from "react-icons/md";
 import Transition from "@/components/commons/Transition";
 import Nav from "@/components/commons/Nav/Nav";
 import Footer from "@/components/commons/Footer";
-import { FolderStructure, TechStackMarquee } from "@/components/Home";
+import {
+  FolderStructure,
+  TechStackMarquee,
+  APIEndpointsSection,
+} from "@/components/Home";
 
 export const HomePage = () => {
   return (
@@ -19,10 +23,10 @@ export const HomePage = () => {
         ease: "easeInOut",
         delay: 0.25,
       }}
-      className="min-h-screen bg-background text-foreground p-8 "
+      className="min-h-screen bg-background text-foreground px-8 pt-20 pb-8"
     >
       <Nav />
-      <div className="max-w-4xl mx-auto mt-20 rounded-[2px]">
+      <div className="max-w-4xl mx-auto mt-4 rounded-[2px]">
         <h1 className="text-3xl font-bold mb-8 text-center">
           Sentora Fullstack Challenge
         </h1>
@@ -67,7 +71,7 @@ export const HomePage = () => {
         <FolderStructure type="backend" />
         <FolderStructure type="frontend" />
       </div>
-
+      <APIEndpointsSection />
       <Footer />
     </motion.div>
   );

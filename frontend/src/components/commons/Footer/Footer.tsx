@@ -40,7 +40,7 @@ const Footer = () => {
       transition={{ duration: 0.6, ease: "easeInOut" }}
       className="mt-20 border-t bg-card/50"
     >
-      <div className="max-w-[900px] mx-auto px-2 py-12">
+      <div className="max-w-[900px] mx-auto px-2 py-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div className="flex flex-col space-y-4">
             <div className="flex items-center space-x-2">

@@ -13,10 +13,10 @@ export type TimeRange =
   | "All";
 
 export interface ChartDataPoint {
-  value: number | null; // Liquidity en millones (para eje Y), null para gaps
-  apr: number; // APR para tooltip
-  timestamp: string; // ISO string para formatear en frontend
-  displayType?: "hour" | "date" | "fullDate"; // Marcador para el formateo
+  value: number | null;
+  apr: number;
+  timestamp: string;
+  displayType?: "hour" | "date" | "fullDate";
 }
 
 export interface ChartResponse {
@@ -33,18 +33,14 @@ export interface ChartResponse {
 }
 
 export interface CustomDateRange {
-  from: string; // YYYY-MM-DD
-  to: string; // YYYY-MM-DD
+  from: string;
+  to: string;
 }
 
 const api = axios.create({
   baseURL: "http://localhost:3001/api",
 });
 
-/**
- * Hook para obtener datos de charts del backend
- * Refactorizado para mayor mantenibilidad y escalabilidad
- */
 export const useGetChartData = (
   timeRange: TimeRange,
   customRange?: CustomDateRange,
@@ -90,7 +86,6 @@ export const useGetChartData = (
         console.warn("Falle:", error);
       }
 
-      // Fallback: usar snapshots directamente
       const snapshotsResponse = await api.get("/metrics/snapshots");
       if (!snapshotsResponse.data.success) {
         throw new Error("Failed to fetch fallback data");
