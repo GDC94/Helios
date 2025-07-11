@@ -287,10 +287,6 @@ class YTDStrategy {
   }
 }
 
-/**
- * Calcula el valor máximo del eje Y basado en los datos reales
- * Agrega un buffer del 15% para mejor visualización
- */
 function calculateYAxisMax(data: ChartDataPoint[]): number {
   if (data.length === 0) return 40; // Valor por defecto si no hay datos
   
@@ -299,14 +295,10 @@ function calculateYAxisMax(data: ChartDataPoint[]): number {
   // Agregar buffer del 15% y redondear hacia arriba al siguiente múltiplo de 5
   const bufferedMax = maxValue * 1.15;
   const roundedMax = Math.ceil(bufferedMax / 5) * 5;
-  
-  // Asegurar que el valor mínimo sea 40 (como se espera en el frontend)
+
   return Math.max(roundedMax, 40);
 }
 
-/**
- * Servicio principal de charts
- */
 export class ChartService {
   private strategies: Record<TimeRange, () => Promise<ChartDataPoint[]>> = {
     '7d': () => new SevenDaysStrategy().processData(),
@@ -363,7 +355,6 @@ export class ChartService {
     if (diffDays <= 30) {
       return await this.getCustomDailyData(from, to, diffDays);
     } else {
-      // Usar formato mensual para períodos mayores a 30 días
       return await this.getCustomMonthlyData(from, to);
     }
   }
@@ -372,7 +363,6 @@ export class ChartService {
     const movingAverage = diffDays <= 15 ? 1 : 12;
     const results: ChartDataPoint[] = [];
     
-    // Obtener todos los snapshots en el rango una sola vez
     const allSnapshots = await prisma.snapshot.findMany({
       where: {
         pairAddress: { in: [...PAIR_ADDRESSES] },
@@ -381,7 +371,6 @@ export class ChartService {
       orderBy: { timestamp: 'asc' }
     });
     
-    // Agrupar snapshots por día
     const dailyData = new Map<string, any[]>();
     allSnapshots.forEach(snapshot => {
       const day = snapshot.timestamp.toISOString().split('T')[0]!; // YYYY-MM-DD
@@ -390,8 +379,7 @@ export class ChartService {
       }
       dailyData.get(day)!.push(snapshot);
     });
-    
-    // Generar datos para cada día del rango
+
     for (let i = 0; i <= diffDays; i++) {
       const currentDate = new Date(from.getTime() + i * 24 * 60 * 60 * 1000);
       const dayString = currentDate.toISOString().split('T')[0]!;
@@ -402,16 +390,14 @@ export class ChartService {
       let avgAPR = 0;
       
       if (daySnapshots.length > 0) {
-        // Usar datos reales del día
         const aprData = calculateAPRWithMovingAverage(daySnapshots, movingAverage);
         if (aprData.length > 0) {
           avgLiquidity = aprData.reduce((sum, item) => sum + item.liquidity, 0) / aprData.length;
           avgAPR = aprData.reduce((sum, item) => sum + item.apr, 0) / aprData.length;
         }
       } else {
-        // Usar valores por defecto si no hay datos para el día
-        avgLiquidity = 24_000_000; // 24M como valor por defecto
-        avgAPR = 8.5; // 8.5% como APR por defecto
+        avgLiquidity = 24_000_000;
+        avgAPR = 8.5;
       }
       
       // Usar mediodía como timestamp
@@ -430,7 +416,6 @@ export class ChartService {
   private async getCustomMonthlyData(from: Date, to: Date): Promise<ChartDataPoint[]> {
     const results: ChartDataPoint[] = [];
     
-    // Obtener todos los snapshots en el rango una sola vez
     const allSnapshots = await prisma.snapshot.findMany({
       where: {
         pairAddress: { in: [...PAIR_ADDRESSES] },
@@ -450,7 +435,6 @@ export class ChartService {
       monthlyData.get(monthKey)!.push(snapshot);
     });
     
-    // Generar datos para cada mes del rango
     let currentMonth = new Date(from.getFullYear(), from.getMonth(), 1);
     const endMonth = new Date(to.getFullYear(), to.getMonth(), 1);
     
@@ -462,7 +446,6 @@ export class ChartService {
       let avgAPR = 0;
       
       if (monthSnapshots.length > 0) {
-        // Usar datos reales del mes
         const aprData = calculateAPRWithMovingAverage(monthSnapshots, 24);
         if (aprData.length > 0) {
           avgLiquidity = aprData.reduce((sum, item) => sum + item.liquidity, 0) / aprData.length;
@@ -473,8 +456,7 @@ export class ChartService {
         avgLiquidity = 24_000_000; // 24M como valor por defecto
         avgAPR = 8.5; // 8.5% como APR por defecto
       }
-      
-      // Usar el día 15 del mes como timestamp (mitad del mes)
+    
       const midMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 15, 12, 0, 0);
       
       results.push({

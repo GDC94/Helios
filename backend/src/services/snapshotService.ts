@@ -26,7 +26,7 @@ export class SnapshotService {
       console.log(`✅ Snapshots procesados para ${pairAddress}`);
       return data.length;
     } catch (error) {
-      console.error(`❌ Error snapshot ${pairAddress}:`, (error as Error).message);
+      console.error(`Error snapshot ${pairAddress}:`, (error as Error).message);
       throw error;
     }
   }
