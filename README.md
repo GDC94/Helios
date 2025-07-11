@@ -13,10 +13,10 @@ Dashboard AMM para monitoreo de liquidez y APR de pares Uniswap v2 con datos en 
 
 ## Dashboard con skeletons de carga y empty state
 <p align="center">
-  <img src="./frontend/assets/src/dash-capture.png" width="600" alt="Captura de pantalla principal" />
+  <img src="./frontend/src/assets/dash-capture.png" width="600" alt="Captura de pantalla principal" />
 </p>
 <p align="center">
-  <img src="./frontend/assets/src/empty.png" width="600" alt="Captura de pantalla principal" />
+  <img src="./frontend/src/assets/empty.png" width="600" alt="Captura de pantalla principal" />
 </p>
 
 ## Not found page
