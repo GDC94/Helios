@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-echo "🚀 Iniciando Sentora Backend..."
+echo "Iniciando Sentora Backend..."
 
-# 1. Ir al directorio del backend
+# 1. ir al directorio del backend
 cd "$(dirname "$0")/.."
 
-# 2. Verificar que existe .env
+# 2 verificar que existe .env
 if [ ! -f .env ]; then
   echo "❌ Archivo .env no encontrado. Creando desde .env.example..."
   if [ -f .env.example ]; then
@@ -18,15 +18,15 @@ if [ ! -f .env ]; then
   fi
 fi
 
-# 3. Limpiar contenedores existentes
+# 3 limpiar contenedores existentes
 echo "🧹 Limpiando contenedores existentes..."
 docker compose down -v --remove-orphans
 
-# 4. Levantar servicios
+# 4.levantar servicios
 echo "📦 Levantando servicios..."
 docker compose up -d --build
 
-# 5. Esperar a que PostgreSQL esté listo
+# 5. esperar a que PostgreSQL esté listo
 echo "⏳ Esperando a que PostgreSQL arranque..."
 until docker exec sentora-postgres pg_isready -U sentora_user -d sentora_db >/dev/null 2>&1; do
   echo "   Esperando PostgreSQL..."
@@ -34,19 +34,19 @@ until docker exec sentora-postgres pg_isready -U sentora_user -d sentora_db >/de
 done
 echo "✅ PostgreSQL está listo"
 
-# 6. Aplicar migraciones
+# Aplico migraciones
 echo "🗄️  Aplicando migraciones..."
 docker exec sentora-backend npx prisma migrate deploy
 
-# 7. Generar cliente Prisma
+# genero cliente Prisma
 echo "🔧 Generando cliente Prisma..."
 docker exec sentora-backend npx prisma generate
 
-# 8. Verificar que el backend esté funcionando
+# verificar que el backend esté funcionando
 echo "🔍 Verificando servicios..."
 sleep 5
 
-# Verificar health check
+# erificar health check
 if curl -s http://localhost:3001/api/health > /dev/null; then
   echo "✅ Backend funcionando correctamente"
 else
@@ -55,7 +55,7 @@ else
   exit 1
 fi
 
-# 9. Mensaje final
+#nensaje final
 echo "
 🎉 ¡Proyecto levantado correctamente!
 

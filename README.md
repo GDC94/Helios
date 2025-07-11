@@ -1,8 +1,37 @@
-# Sentora FullStack exercise - German Derbes Catoni 🚀
+# Sentora FullStack exercise - German Derbes Catoni 
 
 Dashboard AMM para monitoreo de liquidez y APR de pares Uniswap v2 con datos en tiempo real de The Graph.
 
-## Inicio rápido
+## Inicio
+
+### capturas
+
+## Home
+<p align="center">
+  <img src="./frontend/src/assets/home.png" width="600" alt="Captura de pantalla principal" />
+</p>
+
+## Dashboard con skeletons de carga y empty state
+<p align="center">
+  <img src="./frontend/assets/src/dash-capture.png" width="600" alt="Captura de pantalla principal" />
+</p>
+<p align="center">
+  <img src="./frontend/assets/src/empty.png" width="600" alt="Captura de pantalla principal" />
+</p>
+
+## Not found page
+<p align="center">
+  <img src="./frontend/src/assets/not-found.png" width="600" alt="Captura de pantalla principal" />
+</p>
+
+## Global Metrics y Annualized Returns con data dinamica, skeletons y empty state
+<p align="center">
+  <img src="./frontend/src/assets/metrics-cards.png" width="600" alt="Captura de pantalla principal" />
+</p>
+<p align="center">
+  <img src="./frontend/src/assets/metrics.png" width="600" alt="Captura de pantalla principal" />
+</p>
+
 
 ### Prerequisitos
 - Docker y Docker Compose instalados
@@ -19,7 +48,7 @@ cd backend && ./scripts/start.sh
 ```
 
 Este comando:
-- ✅ Levanta PostgreSQL + Redis + Backend automáticamente
+- ✅ Levanta PostgreSQL + Backend automáticamente
 - ✅ Configura base de datos con migraciones
 - ✅ Inicia captura de datos de The Graph
 - ✅ Verifica que todo funcione
@@ -51,17 +80,26 @@ curl http://localhost:3001/api/metrics/snapshots
 
 ### Backend
 - **Node.js + TypeScript + Express** - API REST
-- **PostgreSQL + Prisma ORM** - Base de datos
+- **PostgreSQL + Prisma ORM** - Base de datos y migrations
 - **GraphQL (The Graph)** - Datos DeFi en tiempo real
-- **Docker Compose** - Orquestación completa
-- **Cron Jobs** - Captura automática de snapshots
+- **Docker + Docker Compose** - Orquestación completa
+- **Redis** - Cache y almacenamiento temporal
+- **Cron Jobs (node-cron)** - Captura automática de snapshots
+- **Zod** - Validación de schemas y tipos
+- **CORS** - Habilitación de cross-origin requests
+- **ESLint + Prettier** - Linting y formateo de código
 
 ### Frontend
 - **React + TypeScript** - Interfaz moderna
-- **TailwindCSS** - Estilos responsive
-- **Recharts** - Visualización de datos
-- **React Query** - Gestión de estado servidor
-- **Shadcn/ui** - Componentes consistentes
+- **TailwindCSS** - Estilos responsive y utilidades CSS
+- **Recharts** - Visualización de datos y gráficos interactivos
+- **React Query (TanStack Query)** - Gestión de estado servidor
+- **Shadcn/ui** - Componentes consistentes y accesibles
+- **Framer Motion** - Animaciones fluidas y interacciones
+- **React Router** - Navegación entre páginas
+- **React Icons** - Iconografía consistente
+- **Vite** - Build tool moderno y rápido
+- **ESLint + Prettier** - Linting y formateo de código
 
 ---
 
@@ -94,6 +132,34 @@ curl http://localhost:3001/api/metrics/snapshots
 
 ---
 
+## 🛠️ Herramientas de Desarrollo
+
+### **Calidad de Código**
+- **TypeScript** - Tipado estático para mayor robustez
+- **Husky** - Git hooks para pre-commit
+- **Lint-staged** - Linting solo en archivos modificados
+- **Prettier** - Formateo automático de código
+- **ESLint** - Análisis estático y detección de errores
+
+### **Testing**
+- **Vitest** - Testing framework moderno
+- **React Testing Library** - Testing de componentes
+- **MSW** - Mocking de APIs para testing
+
+### **Desarrollo**
+- **Vite** - Build tool rápido con HMR
+- **React DevTools** - Debugging de componentes
+- **Postman/Insomnia** - Testing de APIs
+
+### **Hooks Personalizados**
+- **useGetChartData** - Datos para gráficos con cache
+- **useGetGlobalMetrics** - Métricas globales del dashboard
+- **useGetAnnualizedReturns** - Retornos anualizados por período
+
+> **Nota**: Se han eliminado hooks no utilizados (useGetSnapshots, useGetPairs, useGetPairAPR, useGetAllPairsAPR, useMetricsCache) para mantener el código limpio y optimizado.
+
+---
+
 ## 📈 Funcionalidades Principales
 
 ### ⚡ **Tiempo Real**
@@ -112,6 +178,14 @@ curl http://localhost:3001/api/metrics/snapshots
 - Visualización de gaps en datos faltantes
 - Escalas Y uniformes y optimizadas
 - Formateo inteligente de fechas
+
+### 🎨 **Animaciones y UX**
+- **Framer Motion** - Transiciones fluidas y micro-interacciones
+- **Hover Effects** - Efectos sutiles en cards y botones
+- **Loading States** - Skeletons animados durante carga
+- **Error States** - Estados de error con animaciones
+- **Page Transitions** - Transiciones entre páginas
+- **Responsive Design** - Adaptación a todos los dispositivos
 
 ---
 
@@ -183,11 +257,10 @@ npm run test:ui       # Interfaz gráfica de tests
 ## 🧪 Testing
 
 ### Stack de Testing
-- **Vitest** - Test runner moderno y rápido (compatible con Vite)
-- **@testing-library/react** - Testing de componentes React
-- **@testing-library/jest-dom** - Matchers adicionales para DOM
-- **@testing-library/user-event** - Simulación de interacciones de usuario
-- **jsdom** - Entorno DOM virtual
+- **Vitest** 
+- **React Testing Library** - testing de componentes React
+- **jsdom** - dom virtual para testing
+- **@vitest/ui** - interfaz gráfica para tests
 
 ### Comandos de Testing
 ```bash
@@ -245,12 +318,18 @@ describe("MiComponente", () => {
 - `GET /api/db-check` - Verificar base de datos
 - `GET /` - Información general
 
-### 📊 **Métricas**
+### 📊 **Métricas Core (Utilizados por Frontend)**
+- `GET /api/metrics/global` - Métricas globales del dashboard
+- `GET /api/metrics/annualized-returns` - Retornos anualizados por período
+- `GET /api/metrics/chart?timeRange=7d` - Datos para gráficos
+- `GET /api/metrics/chart?timeRange=custom&from=2025-07-01&to=2025-07-05` - Rango personalizado
+
+### 📊 **Métricas Adicionales**
 - `GET /api/metrics/snapshots` - Todos los snapshots
 - `GET /api/metrics/snapshots?pairAddress=0x...` - Por par específico
 - `GET /api/metrics/pairs` - Pares monitoreados
-- `GET /api/metrics/chart?timeRange=7d` - Datos para gráficos
-- `GET /api/metrics/chart?timeRange=custom&from=2025-07-01&to=2025-07-05` - Rango personalizado
+- `GET /api/metrics/apr` - Cálculo APR con moving averages
+- `GET /api/metrics/apr/all` - APR para todos los pares
 
 ---
 
