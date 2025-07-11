@@ -307,8 +307,8 @@ export class ChartService {
     '6m': () => new MonthlyStrategy(6).processData(),
     '1y': () => new MonthlyStrategy(12).processData(),
     'YTD': () => new YTDStrategy().processData(),
-    'custom': () => Promise.resolve([]), // Se maneja por separado
-    'All': () => new SevenDaysStrategy().processData() // Usar la misma lógica que 7d
+    'custom': () => Promise.resolve([]),
+    'All': () => new SevenDaysStrategy().processData()
   };
   
   async getChartData(timeRange: TimeRange, customRange?: CustomDateRange): Promise<ChartResponse> {

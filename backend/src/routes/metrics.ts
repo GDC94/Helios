@@ -191,6 +191,25 @@ router.get('/pairs', async (req, res) => {
   }
 });
 
+// GET /api/metrics/service-stats - Estadísticas del servicio de snapshots
+router.get('/service-stats', async (req, res) => {
+  try {
+    const { getServiceStats } = await import('../services/snapshotService');
+    const stats = await getServiceStats();
+    
+    return res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    console.error('Error fetching service stats:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to fetch service stats'
+    });
+  }
+});
+
 // GET /api/metrics/global - Global metrics para el dashboard
 router.get('/global', async (req, res) => {
   try {

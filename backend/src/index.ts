@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 import metricsRouter from './routes/metrics';
-import { snapshotService } from './services/snapshotService';
+import { getSnapshots } from './services/snapshotService';
 import { startSnapshotJob } from './services/snapshotJob';
 import { API_ROUTES, SERVER_CONFIG } from './config/routes';
 
@@ -29,7 +29,7 @@ app.get(API_ROUTES.HEALTH, (req, res) => {
 
 app.get(API_ROUTES.DB_CHECK, async (req, res) => {
   try {
-    const snapshots = await snapshotService.getSnapshots();
+    const snapshots = await getSnapshots();
     res.json({
       status: 'ok',
       totalSnapshots: snapshots.length,
