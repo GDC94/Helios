@@ -32,13 +32,13 @@ const NotFoundPage = () => {
 
   const navigationOptions: NavigationOption[] = [
     {
-      name: "Volver al Inicio",
+      name: "Back to Home",
       href: APP_ROUTES.HOME,
       icon: MdOutlineHome,
       isPrimary: true,
     },
     {
-      name: "Ir al Dashboard",
+      name: "Go to Dashboard",
       href: APP_ROUTES.DASHBOARD,
       icon: MdOutlineDashboard,
       isPrimary: false,

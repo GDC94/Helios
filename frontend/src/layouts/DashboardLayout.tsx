@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components";
 import Header from "@/components/commons/Header/Header";
 
-function DashboardLayout() {
+const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
   return (
@@ -55,6 +55,6 @@ function DashboardLayout() {
       </div>
     </div>
   );
-}
+};
 
 export default DashboardLayout;

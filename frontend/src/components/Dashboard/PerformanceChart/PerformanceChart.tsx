@@ -106,7 +106,7 @@ const PerformanceChart = () => {
     return renderChartCard(<ChartSkeleton />);
   }
 
-  if (!error) {
+  if (error) {
     return renderChartCard(<ChartEmptyState />);
   }
 
