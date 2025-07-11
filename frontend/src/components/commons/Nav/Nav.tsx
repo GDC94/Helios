@@ -23,7 +23,9 @@ const Nav = () => {
         </Avatar>
       </Link>
       <NavLink href={APP_ROUTES.HOME}>Home</NavLink>
-      <NavLink href="https://github.com/GDC94/sentora">Docs</NavLink>
+      <NavLink href="https://github.com/GDC94/sentora/blob/main/README.md">
+        Docs
+      </NavLink>
       <NavLink href="https://github.com/GDC94/sentora">Repo</NavLink>
       <Link to={APP_ROUTES.DASHBOARD}>
         <DashboardButton />
