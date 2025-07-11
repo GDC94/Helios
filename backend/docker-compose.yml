@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sentora-postgres
+    environment:
+      POSTGRES_DB: sentora_db
+      POSTGRES_USER: sentora_user
+      POSTGRES_PASSWORD: sentora_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sentora-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentora_user -d sentora_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: sentora-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - sentora-network
+
+  backend:
+    build: .
+    container_name: sentora-backend
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://sentora_user:sentora_password@postgres:5432/sentora_db
+      - NODE_ENV=development
+      - PORT=3001
+    volumes:
+      - .:/app
+    networks:
+      - sentora-network
+    command: sh -c "npx prisma generate && npm run dev"
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  sentora-network:
+    driver: bridge
