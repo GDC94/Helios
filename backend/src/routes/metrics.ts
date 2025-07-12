@@ -7,7 +7,6 @@ import { TimeRange } from '../types/chart';
 const router = Router();
 const prisma = new PrismaClient();
 
-// GET /api/metrics/snapshots
 router.get('/snapshots', async (req, res) => {
   try {
     const { pairAddress, from, to } = req.query;
@@ -17,7 +16,6 @@ router.get('/snapshots', async (req, res) => {
       whereClause.pairAddress = pairAddress;
     }
 
-    // Filtros de fecha
     if (from || to) {
       whereClause.timestamp = {};
       if (from && typeof from === 'string') {
@@ -31,7 +29,7 @@ router.get('/snapshots', async (req, res) => {
     const snapshots = await prisma.snapshot.findMany({
       where: whereClause,
       orderBy: { timestamp: 'desc' },
-      take: 1000 // Aumentamos el límite
+      take: 1000
     });
 
     return res.json({
@@ -102,7 +100,6 @@ router.get('/apr/all', async (req, res) => {
   }
 });
 
-// GET /api/metrics/apr - Calcular APR con moving averages
 router.get('/apr', async (req, res) => {
   try {
     const { pairAddress, from, to, movingAverage = '24' } = req.query;
@@ -116,7 +113,6 @@ router.get('/apr', async (req, res) => {
 
     const whereClause: any = { pairAddress };
     
-    // Filtros de fecha
     if (from || to) {
       whereClause.timestamp = {};
       if (from && typeof from === 'string') {
@@ -141,10 +137,7 @@ router.get('/apr', async (req, res) => {
       });
     }
 
-    // Convertir movingAverage a número de horas
     const movingHours = parseInt(movingAverage as string) || 24;
-    
-    // Calcular APR con moving average
     const aprData = calculateAPRWithMovingAverage(snapshots, movingHours);
 
     return res.json({
@@ -162,8 +155,7 @@ router.get('/apr', async (req, res) => {
   }
 });
 
-// GET /api/metrics/pairs - Lista pares monitoreados
-router.get('/pairs', async (req, res) => {
+router.get('/pairs', async (_req, res) => {
   try {
     const pairs = await prisma.snapshot.groupBy({
       by: ['pairAddress'],
@@ -191,7 +183,6 @@ router.get('/pairs', async (req, res) => {
   }
 });
 
-// GET /api/metrics/service-stats - Estadísticas del servicio de snapshots
 router.get('/service-stats', async (req, res) => {
   try {
     const { getServiceStats } = await import('../services/snapshots');
@@ -210,13 +201,11 @@ router.get('/service-stats', async (req, res) => {
   }
 });
 
-// GET /api/metrics/global - Global metrics para el dashboard
-router.get('/global', async (req, res) => {
+router.get('/global', async (_req, res) => {
   try {
-    // Obtener snapshots más recientes para cada par
     const latestSnapshots = await prisma.snapshot.findMany({
       orderBy: { timestamp: 'desc' },
-      take: 50 // Últimos 50 snapshots para tener datos suficientes
+      take: 50
     });
 
     if (latestSnapshots.length === 0) {
@@ -237,11 +226,9 @@ router.get('/global', async (req, res) => {
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     const yearStart = new Date(now.getFullYear(), 0, 1);
 
-    // Total Allocation (liquidez actual)
-    const currentSnapshots = latestSnapshots.slice(0, 5); // Últimos 5 snapshots
+    const currentSnapshots = latestSnapshots.slice(0, 5);
     const totalAllocation = currentSnapshots.reduce((sum, s) => sum + s.liquidity, 0) / currentSnapshots.length;
 
-    // Day Change
     const yesterdaySnapshots = latestSnapshots.filter(s => 
       new Date(s.timestamp) >= yesterday && new Date(s.timestamp) < now
     );
@@ -253,7 +240,6 @@ router.get('/global', async (req, res) => {
     const dayChangeValue = totalAllocation - yesterdayAvg;
     const dayChangePercentage = yesterdayAvg > 0 ? (dayChangeValue / yesterdayAvg) * 100 : 0;
 
-    // YTD Change (aproximado basado en datos disponibles)
     const yearStartSnapshots = latestSnapshots.filter(s => 
       new Date(s.timestamp) >= yearStart
     );
@@ -264,14 +250,12 @@ router.get('/global', async (req, res) => {
     const ytdChangeValue = totalAllocation - ytdStartValue;
     const ytdChangePercentage = ytdStartValue > 0 ? (ytdChangeValue / ytdStartValue) * 100 : 0;
 
-    // Average Annualized Yield (basado en APR reciente)
     const recentAPRData = calculateAPRWithMovingAverage(latestSnapshots.slice(0, 10), 24);
     const averageAnnualizedYield = recentAPRData.length > 0 ? 
       recentAPRData.reduce((sum, apr) => sum + apr.apr, 0) / recentAPRData.length : 0;
 
-    // Total Deployed (suma de toda la liquidez histórica máxima)
     const maxLiquidity = Math.max(...latestSnapshots.map(s => s.liquidity));
-    const totalDeployed = maxLiquidity * 1.2; // Factor de seguridad
+    const totalDeployed = maxLiquidity * 1.2;
 
     return res.json({
       success: true,
@@ -298,7 +282,6 @@ router.get('/global', async (req, res) => {
   }
 });
 
-// GET /api/metrics/annualized-returns - Retornos anualizados para diferentes períodos
 router.get('/annualized-returns', async (req, res) => {
   try {
     const { pairAddress } = req.query;
@@ -336,7 +319,7 @@ router.get('/annualized-returns', async (req, res) => {
       allTime: { hours: 24 * 365, snapshots: [] as any[] } // Máximo 1 año
     };
 
-    // Filtrar snapshots por período
+
     const periodKeys: (keyof typeof periods)[] = ['twentyFourHour', 'sevenDay', 'thirtyDay', 'allTime'];
     periodKeys.forEach(periodKey => {
       const period = periods[periodKey];
@@ -344,7 +327,6 @@ router.get('/annualized-returns', async (req, res) => {
       period.snapshots = snapshots.filter(s => new Date(s.timestamp) >= cutoffTime);
     });
 
-    // Calcular retornos anualizados para cada período
     const calculateAnnualizedReturn = (periodSnapshots: any[], periodHours: number) => {
       if (periodSnapshots.length < 2) return 0;
 
@@ -357,10 +339,8 @@ router.get('/annualized-returns', async (req, res) => {
       
       if (initialValue <= 0) return 0;
 
-      // Calcular retorno simple del período
       const periodReturn = (finalValue - initialValue) / initialValue;
       
-      // Anualizar el retorno (convertir a base anual)
       const periodsPerYear = (365 * 24) / periodHours;
       const annualizedReturn = (Math.pow(1 + periodReturn, periodsPerYear) - 1) * 100;
       
@@ -394,7 +374,6 @@ function calculateAPRWithMovingAverage(snapshots: any[], movingHours: number) {
   for (let i = 0; i < snapshots.length; i++) {
     const currentSnapshot = snapshots[i];
     
-    // Obtener snapshots dentro del rango de moving average
     const currentTime = new Date(currentSnapshot.timestamp).getTime();
     const windowStart = currentTime - (movingHours * 60 * 60 * 1000);
     
@@ -455,7 +434,6 @@ router.get('/chart', async (req, res) => {
         });
       }
       
-      // Validar formato de fecha
       const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
       if (!dateRegex.test(from) || !dateRegex.test(to)) {
         return res.status(400).json({
