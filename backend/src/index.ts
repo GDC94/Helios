@@ -3,9 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 import metricsRouter from './routes/metrics';
-import { getSnapshots } from './services/snapshotService';
-import { startSnapshotJob } from './services/snapshotJob';
 import { API_ROUTES, SERVER_CONFIG } from './config/routes';
+import { snapshotService } from '././services/snapshots';
 
 dotenv.config();
 
@@ -29,7 +28,7 @@ app.get(API_ROUTES.HEALTH, (req, res) => {
 
 app.get(API_ROUTES.DB_CHECK, async (req, res) => {
   try {
-    const snapshots = await getSnapshots();
+    const snapshots = await snapshotService.getSnapshots();
     res.json({
       status: 'ok',
       totalSnapshots: snapshots.length,
@@ -68,7 +67,7 @@ const server = app.listen(PORT, () => {
   console.log(`chart: http://${host}:${PORT}${API_ROUTES.METRICS.CHART}`);
   
   console.log(`🕐 Starting snapshot job...`);
-  startSnapshotJob(prisma);
+  snapshotService.startSnapshotJob();
 });
 
 

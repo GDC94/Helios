@@ -1,43 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { TimeRange, ChartResponse, ChartDataPoint, CustomDateRange } from '../types/chart';
-import { PAIR_ADDRESSES } from '../config';
+import { TimeRange, ChartResponse, ChartDataPoint, CustomDateRange } from '../../types/chart';
+import { PAIR_ADDRESSES } from '../../config';
+import { calculateAPRWithMovingAverage, calculateYAxisMax } from '../../utils';
+
 
 const prisma = new PrismaClient();
-
-/**
- * Función para calcular APR con moving average
- * Reutilizada de routes/metrics.ts
- */
-function calculateAPRWithMovingAverage(snapshots: any[], movingHours: number): any[] {
-  const aprData = [];
-  
-  for (let i = 0; i < snapshots.length; i++) {
-    const currentSnapshot = snapshots[i];
-    const currentTime = new Date(currentSnapshot.timestamp).getTime();
-    const windowStart = currentTime - (movingHours * 60 * 60 * 1000);
-    
-    const windowSnapshots = snapshots.filter(s => {
-      const snapTime = new Date(s.timestamp).getTime();
-      return snapTime >= windowStart && snapTime <= currentTime;
-    });
-    
-    if (windowSnapshots.length > 0) {
-      const avgFees = windowSnapshots.reduce((sum, s) => sum + s.fees, 0) / windowSnapshots.length;
-      const avgLiquidity = windowSnapshots.reduce((sum, s) => sum + s.liquidity, 0) / windowSnapshots.length;
-      
-      const dailyRate = avgLiquidity > 0 ? avgFees / avgLiquidity : 0;
-      const apr = dailyRate * 365 * 100;
-      
-      aprData.push({
-        timestamp: currentSnapshot.timestamp,
-        apr: parseFloat(apr.toFixed(4)),
-        liquidity: avgLiquidity
-      });
-    }
-  }
-  
-  return aprData;
-}
 
 /**
  * Estrategias para cada timeRange
@@ -287,18 +254,6 @@ class YTDStrategy {
   }
 }
 
-function calculateYAxisMax(data: ChartDataPoint[]): number {
-  if (data.length === 0) return 40; // Valor por defecto si no hay datos
-  
-  const maxValue = Math.max(...data.map(point => point.value ?? 0));
-  
-  // Agregar buffer del 15% y redondear hacia arriba al siguiente múltiplo de 5
-  const bufferedMax = maxValue * 1.15;
-  const roundedMax = Math.ceil(bufferedMax / 5) * 5;
-
-  return Math.max(roundedMax, 40);
-}
-
 export class ChartService {
   private strategies: Record<TimeRange, () => Promise<ChartDataPoint[]>> = {
     '7d': () => new SevenDaysStrategy().processData(),
@@ -399,8 +354,6 @@ export class ChartService {
         avgLiquidity = 24_000_000;
         avgAPR = 8.5;
       }
-      
-      // Usar mediodía como timestamp
       const noonTime = new Date(dayString + 'T12:00:00.000Z');
       
       results.push({
@@ -424,7 +377,6 @@ export class ChartService {
       orderBy: { timestamp: 'asc' }
     });
     
-    // Agrupar snapshots por mes
     const monthlyData = new Map<string, any[]>();
     allSnapshots.forEach(snapshot => {
       const date = new Date(snapshot.timestamp);

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { PAIR_ADDRESSES } from '../config';
-import { chartService } from '../services/chartService';
+import { chartService } from '../services/chart';
 import { TimeRange } from '../types/chart';
 
 const router = Router();
@@ -194,7 +194,7 @@ router.get('/pairs', async (req, res) => {
 // GET /api/metrics/service-stats - Estadísticas del servicio de snapshots
 router.get('/service-stats', async (req, res) => {
   try {
-    const { getServiceStats } = await import('../services/snapshotService');
+    const { getServiceStats } = await import('../services/snapshots');
     const stats = await getServiceStats();
     
     return res.json({
@@ -404,12 +404,8 @@ function calculateAPRWithMovingAverage(snapshots: any[], movingHours: number) {
     });
     
     if (windowSnapshots.length > 0) {
-      // Calcular promedios en la ventana
       const avgFees = windowSnapshots.reduce((sum, s) => sum + s.fees, 0) / windowSnapshots.length;
       const avgLiquidity = windowSnapshots.reduce((sum, s) => sum + s.liquidity, 0) / windowSnapshots.length;
-      
-      // Calcular APR: (fees / liquidity) * (365 * 24) * 100
-      // Como fees es por día, multiplicamos por 365 días
       const dailyRate = avgLiquidity > 0 ? avgFees / avgLiquidity : 0;
       const apr = dailyRate * 365 * 100; // Convertir a porcentaje anual
       

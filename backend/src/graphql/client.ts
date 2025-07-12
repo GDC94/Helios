@@ -14,7 +14,6 @@ const PairDayData = z.object({
   dailyVolumeUSD: z.string(),
 });
 
-// Esquema para toda la respuesta GraphQL
 const PairDayDataResponse = z.object({
   pairDayDatas: z.array(PairDayData),
 });
