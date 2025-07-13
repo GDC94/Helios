@@ -465,7 +465,6 @@ export class ChartService {
         timestamp: midMonth.toISOString()
       });
       
-      // Avanzar al siguiente mes
       currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
     }
     
@@ -480,7 +479,7 @@ export class ChartService {
       '6m': 24,
       '1y': 24,
       'YTD': 24,
-      'All': 1 // Usar el mismo promedio móvil que 7d
+      'All': 1 
     };
     return mapping[timeRange as Exclude<TimeRange, 'custom'>];
   }

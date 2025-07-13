@@ -1,10 +1,10 @@
 export type TimeRange = '7d' | '1m' | '3m' | '6m' | '1y' | 'YTD' | 'custom' | 'All';
 
 export interface ChartDataPoint {
-  value: number;           // Liquidity en millones (para eje Y)
-  apr: number;             // APR para tooltip  
-  timestamp: string;       // ISO string para frontend
-  displayType?: 'hour' | 'date' | 'fullDate'; // Tipo de etiqueta a mostrar
+  value: number;      
+  apr: number;             
+  timestamp: string;      
+  displayType?: 'hour' | 'date' | 'fullDate'; 
 }
 
 export interface ChartResponse {
@@ -19,10 +19,9 @@ export interface ChartResponse {
     to?: string;
   };
 }
-
 export interface CustomDateRange {
-  from: string;            // YYYY-MM-DD
-  to: string;              // YYYY-MM-DD
+  from: string;        
+  to: string;             
 }
 
 export interface TimeRangeStrategy {
