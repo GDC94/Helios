@@ -4,7 +4,6 @@ import { snapshotService } from '../services/snapshots';
 
 const router = Router();
 
-// GET /api/health
 router.get('/health', (_req, res) => {
   res.json({ 
     status: 'ok', 
@@ -13,7 +12,6 @@ router.get('/health', (_req, res) => {
   });
 });
 
-// GET /api/db-check
 router.get('/db-check', async (_req, res) => {
   try {
     const snapshots = await snapshotService.getSnapshots();
