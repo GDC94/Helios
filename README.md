@@ -30,8 +30,39 @@ Dashboard AMM para monitoreo de liquidez y APR de pares Uniswap v2 con datos en 
   <img src="./frontend/src/assets/metrics.png" width="600" alt="Captura de pantalla principal" />
 </p>
 
+---
 
-### Prerequisitos
+## 🚀 DEPLOYMENT EN PRODUCCIÓN
+
+### 📋 Archivos de configuración creados:
+- `backend/render.yaml` - Infraestructura como código para Render
+- `frontend/vercel.json` - Configuración para Vercel
+- `DEPLOYMENT.md` - Guía completa paso a paso
+
+### 🌐 URLs de producción:
+- **Frontend**: `https://sentora-frontend.vercel.app` 
+- **Backend**: `https://sentora-backend.onrender.com`
+- **API Docs**: `https://sentora-backend.onrender.com/api/health`
+
+### ⚡ Deploy rápido:
+
+**Backend en Render:**
+1. Conectar repo en [render.com](https://render.com/)
+2. Crear Blueprint desde `backend/render.yaml`
+3. Render creará automáticamente PostgreSQL + Web Service
+
+**Frontend en Vercel:**
+```bash
+cd frontend
+npm i -g vercel
+vercel --prod
+```
+
+📖 **Ver guía completa**: [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+---
+
+### Prerequisitos (Desarrollo Local)
 - Docker y Docker Compose instalados
 - Puertos 3001 (backend) y 5173 (frontend) disponibles
 
@@ -98,6 +129,12 @@ curl http://localhost:3001/api/metrics/snapshots
 - **React Icons** - Iconografía consistente
 - **Vite** - Build tool moderno y rápido
 - **ESLint + Prettier** - Linting y formateo de código
+
+### Deployment & DevOps
+- **Render** - Backend hosting con PostgreSQL
+- **Vercel** - Frontend hosting con auto-deploy
+- **Docker** - Containerización para desarrollo
+- **GitHub Actions** - CI/CD pipeline (auto-deploy)
 
 ---
 
@@ -200,13 +237,16 @@ sentora/
 │   ├── prisma/           # Schema + migraciones
 │   ├── scripts/
 │   │   └── start.sh      # 🎯 Setup automático
+│   ├── render.yaml       # 🚀 Configuración Render
 │   └── docker-compose.yml
 ├── frontend/             # React + TypeScript
 │   ├── src/
 │   │   ├── components/   # UI components
 │   │   ├── hooks/        # Custom hooks
 │   │   └── pages/        # Páginas
+│   ├── vercel.json       # 🚀 Configuración Vercel
 │   └── package.json
+├── DEPLOYMENT.md         # 📖 Guía de deployment
 └── README.md            # 📖 Este archivo
 ```
 
