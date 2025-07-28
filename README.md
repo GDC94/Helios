@@ -1,5 +1,3 @@
-# Sentora FullStack exercise - German Derbes Catoni 
-
 Dashboard AMM para monitoreo de liquidez y APR de pares Uniswap v2 con datos en tiempo real de The Graph.
 
 ## Inicio
