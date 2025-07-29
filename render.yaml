@@ -2,10 +2,7 @@ services:
   # PostgreSQL Database
   - type: pserv
     name: sentora-postgres
-    env: node
     plan: free
-    databaseName: sentora_db
-    databaseUser: sentora_user
 
   # Backend Web Service  
   - type: web
