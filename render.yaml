@@ -4,9 +4,8 @@ services:
     name: sentora-postgres
     env: node
     plan: free
-    databases:
-      - name: sentora_db
-        user: sentora_user
+    databaseName: sentora_db
+    databaseUser: sentora_user
 
   # Backend Web Service  
   - type: web
