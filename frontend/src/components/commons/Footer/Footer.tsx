@@ -47,12 +47,12 @@ const Footer = () => {
               <div className="w-8 h-8 bg-blue-100/50 rounded-full flex items-center justify-center border-2 border-gray-100">
                 <MdOutlineCode className="w-4 h-4 text-blue-600" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground">Sentora</h3>
+              <h3 className="text-lg font-semibold text-foreground">Helios</h3>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               AMM Dashboard for liquidity and APR monitoring of Uniswap v2 pairs
-              with real-time data from The Graph.res Uniswap v2 con datos en
-              tiempo real de The Graph.
+              with real-time data from The Graph.res Uniswap v2 with real time
+              data from The Graph.
             </p>
             <div className="flex items-center space-x-3">
               {techStack.map(tech => {
