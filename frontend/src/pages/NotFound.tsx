@@ -144,7 +144,7 @@ const NotFoundPage = () => {
               <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                 <div className="flex items-center space-x-4 text-xs text-muted-foreground">
                   <MdOutlineArrowBack className="w-4 h-4" />
-                  <span>Sentora Challenge</span>
+                  <span>Helios</span>
                   <span>•</span>
                   <span>Fullstack Project</span>
                 </div>

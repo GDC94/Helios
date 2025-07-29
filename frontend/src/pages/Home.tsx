@@ -28,7 +28,7 @@ export const HomePage = () => {
       <Nav />
       <div className="max-w-4xl mx-auto mt-4 rounded-[2px]">
         <h1 className="text-3xl font-bold mb-8 text-center">
-          Sentora Fullstack Challenge
+          Fullstack Project
         </h1>
       </div>
       <div className="mt-2 w-full mx-auto max-w-[900px] flex justify-between items-center rounded-[2px] ">

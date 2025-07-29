@@ -110,7 +110,7 @@ const Footer = () => {
         <div className="pt-6 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-              <span>© {currentYear} Sentora Challenge</span>
+              <span>© {currentYear} Helios</span>
               <span>•</span>
               <span>Fullstack Project</span>
             </div>
