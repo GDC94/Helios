@@ -1,12 +1,17 @@
 services:
+  # PostgreSQL Database
+  - type: pserv
+    name: sentora-postgres
+    plan: free
+
   # Backend Web Service  
   - type: web
     name: sentora-backend
     runtime: node
     plan: free
     rootDir: backend
-    buildCommand: npm ci && npm run build && npx prisma generate
-    startCommand: ./scripts/start-production.sh
+    buildCommand: npm ci && npm run build && npx prisma generate && npx prisma migrate deploy || true
+    startCommand: npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
@@ -21,9 +26,4 @@ services:
         value: "60"
       - key: PORT
         value: "10000"
-    autoDeploy: true
-
-databases:
-  # PostgreSQL Database
-  - name: sentora-postgres
-    plan: free 
+    autoDeploy: true 
